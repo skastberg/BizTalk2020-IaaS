@@ -7,24 +7,20 @@
         "Subnet":"AppServers"
     },
     "BizTalk":{
-        "ServerCount": 2,
-        "ServerStartOffset": 0,
-        "ServerNamePrefix":"sk",
-        "ServerNameSuffix":"bts",
+        "Servers": ["BTS001","BTS002"],
         "ProximityGroup":"BizTalkServers-ppg",
         "MachineSize":"Standard_E4s_v3",
         "ResourceGroupSuffix":"bts-rg",
-        "VmRole":"BizTalk Server"
+        "VmRole":"BizTalk Server",
+        "CredentialFile":"samuel.xml"
     },
     "SQL":{
-        "ServerCount": 2,
-        "ServerStartOffset": 0,
-        "ServerNamePrefix":"sk",
-        "ServerNameSuffix":"sql",
+        "Servers": ["SQL001","SQL002"],
         "ProximityGroup":"SQLServers-ppg",
         "MachineSize":"Standard_E4s_v3",
         "ResourceGroupSuffix":"sql-rg",
         "VmRole":"SQL Server",
+        "CredentialFile":"samuel.xml",
         "Disks":[
             {
                 "Name":"SqlData",

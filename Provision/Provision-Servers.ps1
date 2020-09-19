@@ -300,7 +300,23 @@ function New-SQLServers {
     }
 }
 
-
+<#
+.Synopsis
+    Validates configuration
+.Description
+    Validates the provided configuration, failure should stop further execution.
+    Checks: 
+        - VMs don't exist
+        - Virtual network exist
+        - Subnet exist
+        - Credential files exist and are readable
+#>
+function Confirm-Configuration {
+    param (
+        # config Configuration object
+        [parameter(Mandatory = $true)]$configuration
+    )
+}
 ##################################
 # Main code
 ##################################
@@ -318,7 +334,13 @@ $timestamp = [System.DateTime]::Now.ToString("yyyyMMdd_HHmmss")
 
 $configuration = Get-Configuration -fullPathToFile $ConfigurationFile  -exitOnError
 
+if ($configIsValid) {
+    #New-BizTalkServers -configuration $configuration
+    #New-SQLServers -configuration $configuration
+}
+else {
+    Write-Log -message "Configuration file $ConfigurationFile is not valid." -level Error
+}
 
 
-New-BizTalkServers -configuration $configuration
-New-SQLServers -configuration $configuration
+
