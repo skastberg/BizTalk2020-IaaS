@@ -1,0 +1,43 @@
+{
+    "CommonSettings":{
+        "ResourceGroupRoot":"sk-2020HA",
+        "Location":"westeurope",
+        "VirtualNetwork":"sk-vnet",
+        "VirtualNetworkResourceGroup":"sk-main-rg",
+        "Subnet":"AppServers"
+    },
+    "BizTalk":{
+        "ServerCount": 2,
+        "ServerStartOffset": 0,
+        "ServerNamePrefix":"sk",
+        "ServerNameSuffix":"bts",
+        "ProximityGroup":"BizTalkServers-ppg",
+        "MachineSize":"Standard_E4s_v3",
+        "ResourceGroupSuffix":"bts-rg",
+        "VmRole":"BizTalk Server"
+    },
+    "SQL":{
+        "ServerCount": 2,
+        "ServerStartOffset": 0,
+        "ServerNamePrefix":"sk",
+        "ServerNameSuffix":"sql",
+        "ProximityGroup":"SQLServers-ppg",
+        "MachineSize":"Standard_E4s_v3",
+        "ResourceGroupSuffix":"sql-rg",
+        "VmRole":"SQL Server",
+        "Disks":[
+            {
+                "Name":"SqlData",
+                "SkuName":"Premium_LRS",
+                 "Size":1024,
+                 "MaxShares":2
+            },
+            {
+                "Name":"DtcLog",
+                "SkuName":"Premium_LRS",
+                 "Size":1024,
+                 "MaxShares":2
+            }
+        ]
+    }
+}
