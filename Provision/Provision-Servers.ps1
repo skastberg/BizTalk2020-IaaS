@@ -316,6 +316,54 @@ function Confirm-Configuration {
         # config Configuration object
         [parameter(Mandatory = $true)]$configuration
     )
+    $configIsValid = $true
+    # Validate that we have essential properties
+    if ($null -eq $configuration.CommonSettings -or $null -eq $configuration.BizTalk -or $null -eq $configuration.SQL) 
+    {
+        return $false
+    }
+    #BizTalk
+    Write-Log -message "Validating BizTalk Servers don't exist." -level Information
+    $resourceGroupName = "$($configuration.CommonSettings.ResourceGroupRoot)-$($configuration.BizTalk.ResourceGroupSuffix)"
+    foreach ($btServer in $configuration.BizTalk.Servers) 
+    {       
+        $vm = Get-AzVM -ResourceGroupName $resourceGroupName -Name $btServer -ErrorAction SilentlyContinue
+        if ($null -ne $vm) 
+        {
+            Write-Log -message "BizTalk Server '$btServer' already exists in '$resourceGroupName'" -level Error
+            $configIsValid = $false
+        }
+    }
+    #SQL
+    Write-Log -message "Validating SQL Servers don't exist." -level Information
+    $resourceGroupName = "$($configuration.CommonSettings.ResourceGroupRoot)-$($configuration.SQL.ResourceGroupSuffix)"
+    foreach ($btServer in $configuration.SQL.Servers) 
+    {       
+        $vm = Get-AzVM -ResourceGroupName $resourceGroupName -Name $btServer -ErrorAction SilentlyContinue
+        if ($null -ne $vm) 
+        {
+            Write-Log -message "SQL Server '$btServer' already exists in '$resourceGroupName'" -level Error
+            $configIsValid = $false
+        }
+    }
+    #Virtual network
+    Write-Log -message "Validating Virtual network." -level Information
+    $vnet = Get-AzVirtualNetwork -Name $configuration.CommonSettings.VirtualNetwork -ResourceGroupName $configuration.CommonSettings.VirtualNetworkResourceGroup -ErrorAction SilentlyContinue
+    if ($null -eq $vnet) 
+    {
+        Write-Log -message "Virtual network '$($configuration.CommonSettings.VirtualNetwork)' not found in '$($configuration.CommonSettings.VirtualNetworkResourceGroup)'" -level Error
+        $configIsValid = $false
+    }
+    else {
+        Write-Log -message "Validating Subnet." -level Information
+        $subnet = $vnet.Subnets | Where-Object { $_.Name -eq $configuration.CommonSettings.Subnet }
+        if ($null -eq $subnet) {
+            Write-Log -message "Virtual network '$($configuration.CommonSettings.VirtualNetwork)' in '$($configuration.CommonSettings.VirtualNetworkResourceGroup)' don't contain subnet '$($configuration.CommonSettings.Subnet)'" -level Error
+            $configIsValid = $false
+        }
+    }
+
+    return $configIsValid
 }
 ##################################
 # Main code
@@ -333,8 +381,9 @@ Import-Module Az.Network -MinimumVersion 3.3.0 -Force
 $timestamp = [System.DateTime]::Now.ToString("yyyyMMdd_HHmmss")
 
 $configuration = Get-Configuration -fullPathToFile $ConfigurationFile  -exitOnError
-
+$configIsValid = Confirm-Configuration -configuration $configuration
 if ($configIsValid) {
+    Write-Log -message "Configuration file $ConfigurationFile is valid." -level Information
     #New-BizTalkServers -configuration $configuration
     #New-SQLServers -configuration $configuration
 }
