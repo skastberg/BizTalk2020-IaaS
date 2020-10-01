@@ -9,30 +9,44 @@
     "BizTalk":{
         "Servers": ["BTS001","BTS002"],
         "ProximityGroup":"BizTalkServers-ppg",
+        "Zone":"3",
         "MachineSize":"Standard_E4s_v3",
         "ResourceGroupSuffix":"bts-rg",
-        "VmRole":"BizTalk Server",
-        "CredentialFile":"samuel.xml"
+        "Tags": [{"Tag":"VmRole","Value":"BizTalk Server"},{"Tag":"Environment","Value":"Lab"}],
+        "CredentialFile":"samuel.xml",
+        "SharedDisks":[
+            {
+                "Name":"DtcLog-btsdisk",
+                "SkuName":"Premium_LRS",
+                 "SizeGB":512,
+                 "MaxShares":2,
+                 "Lun":1
+
+            }
+        ]
     },
     "SQL":{
         "Servers": ["SQL001","SQL002"],
         "ProximityGroup":"SQLServers-ppg",
+        "Zone":"3",
         "MachineSize":"Standard_E4s_v3",
         "ResourceGroupSuffix":"sql-rg",
-        "VmRole":"SQL Server",
+        "Tags": [{"Tag":"VmRole","Value":"SQL Server"},{"Tag":"Environment","Value":"Lab"}],
         "CredentialFile":"samuel.xml",
-        "Disks":[
+        "SharedDisks":[
             {
-                "Name":"SqlData",
+                "Name":"SqlData-sqldisk",
                 "SkuName":"Premium_LRS",
-                 "Size":1024,
-                 "MaxShares":2
+                 "SizeGB":1024,
+                 "MaxShares":2,
+                 "Lun":1
             },
             {
-                "Name":"DtcLog",
+                "Name":"DtcLog-sqldisk",
                 "SkuName":"Premium_LRS",
-                 "Size":1024,
-                 "MaxShares":2
+                 "SizeGB":512,
+                 "MaxShares":2,
+                 "Lun":2
             }
         ]
     }
