@@ -33,6 +33,7 @@
         "ResourceGroupSuffix":"sql-rg",
         "Tags": [{"Tag":"VmRole","Value":"SQL Server"},{"Tag":"Environment","Value":"Lab"}],
         "CredentialFile":"samuel.xml",
+        "LoadBalancer": {"Name":"SQLServers-lb", "FrontEndAddress":"10.2.2.100", "ProbePort":59999},
         "SharedDisks":[
             {
                 "Name":"SqlData-sqldisk",
