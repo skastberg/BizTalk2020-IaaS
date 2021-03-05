@@ -202,10 +202,15 @@ function New-Loadbalancer
     }
 }
 
+
+
 ##################################
 # Main code
 ##################################
 Clear-Host
+
+Check-LoadedModule -module az
+Set-MyAzureContext
 
 # Timestamp string used for logfiles etc.
 $timestamp = [System.DateTime]::Now.ToString("yyyyMMdd_HHmmss")

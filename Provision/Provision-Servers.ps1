@@ -451,10 +451,32 @@ function Import-AzModules {
 
 }
 
+function Check-LoadedModule
+{
+  Param( [parameter(Mandatory = $true)][alias("Module")][string]$ModuleName)
+  $LoadedModules = Get-Module | Select Name
+  if (!$LoadedModules -like "*$ModuleName*") {Import-Module -Name $ModuleName}
+}
+
+
+function Set-MyAzureContext()
+{
+    $account = Connect-AzAccount
+    $subscription = Get-AzSubscription | Out-GridView -PassThru
+    Set-AzContext -Subscription $subscription.Id
+
+
+}
+
+
 ##################################
 # Main code
 ##################################
 Clear-Host
+
+Check-LoadedModule -module az
+Set-MyAzureContext
+
 
 # Timestamp string used for logfiles etc.
 $timestamp = [System.DateTime]::Now.ToString("yyyyMMdd_HHmmss")
